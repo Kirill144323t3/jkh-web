@@ -175,7 +175,7 @@ export async function createDocument(formData: FormData) {
   if (file && file.size > 0) {
     try {
       const bytes = await file.arrayBuffer()
-      const buffer = Buffer.from(bytes)
+      const buffer = new Uint8Array(bytes)
       
       // Генерируем безопасное имя файла (только латиница и цифры)
       const fileExt = file.name.split('.').pop() || 'file';
@@ -259,7 +259,7 @@ export async function submitDocumentResult(formData: FormData) {
   if (file && file.size > 0) {
     try {
       const bytes = await file.arrayBuffer()
-      const buffer = Buffer.from(bytes)
+      const buffer = new Uint8Array(bytes)
       
       // Генерируем безопасное имя файла
       const fileExt = file.name.split('.').pop() || 'file';

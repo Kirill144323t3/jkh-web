@@ -1,12 +1,11 @@
-import type { CapacitorConfig } from '@capacitor/cli';
+import { CapacitorConfig } from '@capacitor/cli'; // ДОБАВЬ ЭТУ СТРОКУ
 
 const config: CapacitorConfig = {
-  appId: 'com.jkh.app',
-  appName: 'ЖКХ Система',
-  webDir: 'public', // Для Next.js обычно используется 'public' или 'out'
+  appId: 'com.example.app',
+  appName: 'jkh-web',
+  webDir: 'out', // Next.js при экспорте создает именно 'out'
   server: {
-    // ТЕПЕРЬ ТУТ ТВОЙ САЙТ В ИНТЕРНЕТЕ
-    url: 'https://jkh-web.vercel.app',
+    url: 'http://45.95.234.160:3000',
     cleartext: true
   }
 };

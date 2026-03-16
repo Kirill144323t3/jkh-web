@@ -383,7 +383,7 @@ export default async function EmployeeDashboard({ searchParams }: {
               <h3 className="text-lg font-bold text-gray-900">Новое поручение</h3>
               <Link href={`/dashboard?section=${section}&tab=${tab}`} className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"><X className="w-5 h-5" /></Link>
             </div>
-            <form action={createDocument} className="p-6 space-y-4">
+            <form action={createDocument} encType="multipart/form-data" className="p-6 space-y-4">
               <div>
                 <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Заголовок</label>
                 <input name="title" required placeholder="Название документа" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:bg-white focus:border-purple-400 focus:ring-2 focus:ring-purple-100 transition-all" />
@@ -435,7 +435,7 @@ export default async function EmployeeDashboard({ searchParams }: {
               <h3 className="text-lg font-bold text-gray-900">Сдача результата</h3>
               <Link href={`/dashboard?section=${section}&tab=${tab}`} className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"><X className="w-5 h-5" /></Link>
             </div>
-            <form action={submitDocumentResult} className="p-6 space-y-4">
+            <form action={submitDocumentResult} encType="multipart/form-data" className="p-6 space-y-4">
               <input type="hidden" name="id" value={isSubmittingDoc} />
               <div>
                 <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Комментарий</label>

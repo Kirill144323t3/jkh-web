@@ -751,7 +751,7 @@ export default async function AdminDashboardPage({ searchParams }: {
                 <X className="w-5 h-5" />
               </Link>
             </div>
-            <form action={createDocument} className="space-y-5 text-[15px]">
+            <form action={createDocument} encType="multipart/form-data" className="space-y-5 text-[15px]">
               <div>
                 <label className="block mb-2 text-slate-600 font-semibold">Название документа</label>
                 <input name="title" required placeholder="Например: Заявка на ремонт" className="w-full bg-slate-50 rounded-xl px-5 py-3.5 outline-none focus:bg-white focus:ring-4 ring-blue-500/10 border border-slate-200 focus:border-blue-400 text-[15px] font-medium transition-all" />
