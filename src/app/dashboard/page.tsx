@@ -21,7 +21,7 @@ export default async function EmployeeDashboard({ searchParams }: {
   const tab = (params.tab || 'incoming') as string;
 
   const user = await prisma.user.findUnique({
-    where: { id: userId }, include: { role: true, department: true }
+    where: { id: userId }, include: { role: true, department: true, registration: true }
   });
   if (!user) redirect('/login');
 
@@ -114,7 +114,7 @@ export default async function EmployeeDashboard({ searchParams }: {
         {/* ═══ ОБЗОР ═══ */}
         {section === 'overview' && (<>
           <div className="backdrop-blur-md bg-white/80 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 shadow-xl border border-white/20">
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 truncate">Добрый день, {user.fullName.split(' ')[0]}!</h1>
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 truncate">{user.registration?.login}</h1>
             <p className="text-xs sm:text-sm text-gray-600 mt-1">{new Date().toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p>
           </div>
 
