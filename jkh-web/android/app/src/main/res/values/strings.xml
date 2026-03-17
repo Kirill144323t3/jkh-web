@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">ЖКХ Система</string>
+    <string name="title_activity_main">ЖКХ Система</string>
+    <string name="package_name">com.jkh.app</string>
+    <string name="custom_url_scheme">com.jkh.app</string>
+</resources>
