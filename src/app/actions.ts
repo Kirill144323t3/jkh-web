@@ -4,8 +4,6 @@ import { prisma } from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
-import { writeFile, mkdir } from 'fs/promises'
-import { join } from 'path'
 
 // === ВНУТРЕННЯЯ УТИЛИТА ЛОГИРОВАНИЯ ===
 async function logAction(userId: number | null, action: string, details?: any) {
@@ -169,28 +167,22 @@ export async function createDocument(formData: FormData) {
   const priority = (formData.get('priority') as string) || 'medium'
 
   const file = formData.get('file') as File | null
-  let fileName = null
-  let fileUrl = null
+  
+  // Явно указываем типы для TypeScript, чтобы не было ошибки
+  let fileName: string | null = null
+  let fileData: string | null = null
+  let fileType: string | null = null
 
+  // ПРЕВРАЩАЕМ ФАЙЛ В СТРОКУ ДЛЯ БД
   if (file && file.size > 0) {
     try {
       const bytes = await file.arrayBuffer()
-      const buffer = new Uint8Array(bytes)
-      
-      // Генерируем безопасное имя файла (только латиница и цифры)
-      const fileExt = file.name.split('.').pop() || 'file';
-      const safeRandomPart = Math.random().toString(36).substring(2, 8);
-      const uniqueName = `${Date.now()}-${safeRandomPart}.${fileExt}`;
-      
-      const uploadDir = join(process.cwd(), 'public', 'uploads')
-      
-      await mkdir(uploadDir, { recursive: true })
-      await writeFile(join(uploadDir, uniqueName), buffer)
-      
-      fileName = file.name // Оригинальное имя для БД
-      fileUrl = `/uploads/${uniqueName}`
+      const buffer = Buffer.from(bytes)
+      fileData = `data:${file.type};base64,${buffer.toString('base64')}`
+      fileName = file.name
+      fileType = file.type
     } catch (fsError) {
-      console.error("Ошибка сохранения файла:", fsError);
+      console.error("Ошибка кодирования файла:", fsError);
     }
   }
 
@@ -198,7 +190,7 @@ export async function createDocument(formData: FormData) {
     const newDoc = await prisma.document.create({
       data: { 
         title, taskDescription, assignedTo, statusId: 1, userId: parseInt(authorIdString),
-        fileName, fileUrl, deadline, priority
+        fileName, fileData, fileType, deadline, priority
       }
     })
 
@@ -253,27 +245,21 @@ export async function submitDocumentResult(formData: FormData) {
 
   const resultText = formData.get('resultText') as string || null
   const file = formData.get('file') as File | null
-  let resultFileName = null
-  let resultFileUrl = null
+  
+  // Явно указываем типы для TypeScript
+  let resultFileName: string | null = null
+  let resultFileData: string | null = null
+  let resultFileType: string | null = null
 
   if (file && file.size > 0) {
     try {
       const bytes = await file.arrayBuffer()
-      const buffer = new Uint8Array(bytes)
-      
-      // Генерируем безопасное имя файла
-      const fileExt = file.name.split('.').pop() || 'file';
-      const safeRandomPart = Math.random().toString(36).substring(2, 8);
-      const uniqueName = `${Date.now()}-${safeRandomPart}.${fileExt}`;
-      
-      const uploadDir = join(process.cwd(), 'public', 'uploads')
-      await mkdir(uploadDir, { recursive: true })
-      await writeFile(join(uploadDir, uniqueName), buffer)
-      
-      resultFileName = file.name // Оригинальное имя для красивого отображения
-      resultFileUrl = `/uploads/${uniqueName}`
+      const buffer = Buffer.from(bytes)
+      resultFileData = `data:${file.type};base64,${buffer.toString('base64')}`
+      resultFileName = file.name
+      resultFileType = file.type
     } catch (fsError) {
-      console.error("Ошибка сохранения файла результата:", fsError);
+      console.error("Ошибка кодирования файла результата:", fsError);
     }
   }
 
@@ -284,7 +270,8 @@ export async function submitDocumentResult(formData: FormData) {
         statusId: 3, 
         resultText, 
         resultFileName, 
-        resultFileUrl 
+        resultFileData,
+        resultFileType
       } 
     }) 
 

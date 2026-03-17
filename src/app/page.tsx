@@ -447,21 +447,26 @@ export default async function AdminDashboardPage({ searchParams }: {
                               </div>
                             )}
                           </div>
-                          {/* Attachments */}
-                          <div className="flex flex-wrap gap-2">
-                            {doc.fileUrl && (
-                              <a href={doc.fileUrl} {...(doc.fileUrl.toLowerCase().endsWith('.pdf') ? { target: '_blank', rel: 'noopener noreferrer' } : { download: doc.fileName || true })} className="flex items-center gap-2 px-2 sm:px-3 py-1 sm:py-1.5 bg-blue-50 border border-blue-200 rounded-lg text-xs sm:text-sm hover:bg-blue-100 transition-colors">
-                                <Paperclip className="w-3 h-3 sm:w-4 sm:h-4 text-blue-600 flex-shrink-0" />
-                                <span className="text-blue-700 truncate max-w-[150px] sm:max-w-none">{doc.fileName || 'Файл задачи'}</span>
+                          {/* === БЛОК ПРИКРЕПЛЕННОГО ФАЙЛА === */}
+                          {doc.fileData && (
+                            <div className="mt-4 p-3 bg-blue-50/60 rounded-lg border border-blue-100">
+                              <p className="text-[11px] text-gray-500 mb-1">Прикрепленный документ:</p>
+                              <a href={doc.fileData} download={doc.fileName || 'file'} className="text-sm text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-2">
+                                <Paperclip className="w-3.5 h-3.5 text-blue-600 flex-shrink-0" />
+                                Скачать {doc.fileName || 'документ'}
                               </a>
-                            )}
-                            {doc.resultFileUrl && (
-                              <a href={doc.resultFileUrl} {...(doc.resultFileUrl.toLowerCase().endsWith('.pdf') ? { target: '_blank', rel: 'noopener noreferrer' } : { download: doc.resultFileName || true })} className="flex items-center gap-2 px-2 sm:px-3 py-1 sm:py-1.5 bg-emerald-50 border border-emerald-200 rounded-lg text-xs sm:text-sm">
-                                <Paperclip className="w-3 h-3 sm:w-4 sm:h-4 text-emerald-600 flex-shrink-0" />
-                                <span className="text-emerald-700 truncate max-w-[150px] sm:max-w-none">{doc.resultFileName || 'Результат'}</span>
+                            </div>
+                          )}
+                          {/* === БЛОК ФАЙЛА-РЕЗУЛЬТАТА === */}
+                          {doc.resultFileData && (
+                            <div className="mt-2 p-3 bg-emerald-50/60 rounded-lg border border-emerald-100">
+                              <p className="text-[11px] text-gray-500 mb-1">Файл результата:</p>
+                              <a href={doc.resultFileData} download={doc.resultFileName || 'result-file'} className="text-sm text-emerald-600 hover:text-emerald-800 hover:underline flex items-center gap-2">
+                                <Paperclip className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
+                                Скачать результат ({doc.resultFileName || 'файл'})
                               </a>
-                            )}
-                          </div>
+                            </div>
+                          )}
                         </div>
                       </div>
                       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4 pt-3 border-t border-gray-200">

@@ -253,24 +253,37 @@ export default async function EmployeeDashboard({ searchParams }: {
                       <span>{doc.author?.fullName}</span> <ArrowRight className="w-3 h-3 inline text-gray-300 mx-1" /> <span className="font-medium text-gray-700">{doc.assignee?.fullName || 'Не назначен'}</span>
                     </p>
 
-                    {/* Files */}
-                    {(doc.fileUrl || doc.resultFileUrl || doc.resultText) && (
-                      <div className="flex flex-wrap gap-2 mt-3">
-                        {doc.fileUrl && (
-                          <a href={doc.fileUrl} {...(doc.fileUrl.toLowerCase().endsWith('.pdf') ? { target: '_blank', rel: 'noopener noreferrer' } : { download: doc.fileName || true })}
-                            className="inline-flex items-center gap-1 text-xs font-medium text-purple-600 bg-purple-50 px-2.5 py-1 rounded-lg border border-purple-100 hover:bg-purple-100 transition-colors">
-                            <Paperclip className="w-3 h-3" /> {doc.fileName ? doc.fileName.slice(0, 20) + (doc.fileName.length > 20 ? '...' : '') : 'Файл'}
-                          </a>
-                        )}
-                        {doc.resultFileUrl && (
-                          <a href={doc.resultFileUrl} {...(doc.resultFileUrl.toLowerCase().endsWith('.pdf') ? { target: '_blank', rel: 'noopener noreferrer' } : { download: doc.resultFileName || true })}
-                            className="inline-flex items-center gap-1 text-xs font-medium text-teal-600 bg-teal-50 px-2.5 py-1 rounded-lg border border-teal-100 hover:bg-teal-100 transition-colors">
-                            <Paperclip className="w-3 h-3" /> {doc.resultFileName ? doc.resultFileName.slice(0, 20) + (doc.resultFileName.length > 20 ? '...' : '') : 'Результат'}
-                          </a>
-                        )}
-                        {doc.resultText && <span className="text-xs text-gray-400 italic">«{doc.resultText}»</span>}
+                    {/* === НОВЫЙ БЛОК ПРИКРЕПЛЕННОГО ФАЙЛА (ИЗ БАЗЫ) === */}
+                    {doc.fileData && (
+                      <div className="mt-3 p-2.5 bg-purple-50/60 rounded-lg border border-purple-100 w-fit">
+                        <p className="text-[11px] text-gray-500 mb-1">Прикрепленный документ:</p>
+                        <a 
+                          href={doc.fileData} 
+                          download={doc.fileName || 'document'} 
+                          className="inline-flex items-center gap-1.5 text-xs font-medium text-purple-600 hover:text-purple-800 hover:underline"
+                        >
+                          <Paperclip className="w-3 h-3" /> 
+                          Скачать {doc.fileName || 'файл'}
+                        </a>
                       </div>
                     )}
+
+                    {/* === НОВЫЙ БЛОК ФАЙЛА-РЕЗУЛЬТАТА (ИЗ БАЗЫ) === */}
+                    {doc.resultFileData && (
+                      <div className="mt-2 p-2.5 bg-teal-50/60 rounded-lg border border-teal-100 w-fit">
+                        <p className="text-[11px] text-gray-500 mb-1">Файл результата:</p>
+                        <a 
+                          href={doc.resultFileData} 
+                          download={doc.resultFileName || 'result'} 
+                          className="inline-flex items-center gap-1.5 text-xs font-medium text-teal-600 hover:text-teal-800 hover:underline"
+                        >
+                          <CheckCircle2 className="w-3 h-3" /> 
+                          Скачать результат ({doc.resultFileName || 'файл'})
+                        </a>
+                      </div>
+                    )}
+                    
+                    {doc.resultText && <span className="text-xs text-gray-600 italic mt-2 block bg-gray-50 p-2 rounded">«{doc.resultText}»</span>}
 
                     {/* Actions */}
                     <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 mt-3 pt-3 border-t border-gray-100">
@@ -348,9 +361,10 @@ export default async function EmployeeDashboard({ searchParams }: {
                         <p className="text-xs text-gray-500">{doc.author?.fullName} → {doc.assignee?.fullName || 'Не назначен'}</p>
                       </div>
                       <div className="flex flex-wrap items-center gap-2">
-                        {doc.fileUrl && (
-                          <a href={doc.fileUrl} {...(doc.fileUrl.toLowerCase().endsWith('.pdf') ? { target: '_blank', rel: 'noopener noreferrer' } : { download: doc.fileName || true })} className="text-xs font-medium text-purple-600 bg-purple-50 px-2 py-0.5 rounded-md border border-purple-100">
-                            Файл
+                        {/* ФАЙЛЫ В ОТДЕЛЕ */}
+                        {doc.fileData && (
+                          <a href={doc.fileData} download={doc.fileName || 'file'} className="text-xs font-medium text-purple-600 bg-purple-50 px-2 py-0.5 rounded-md border border-purple-100 hover:bg-purple-100 transition-colors">
+                            📎 Файл
                           </a>
                         )}
                         <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium border ${st.color} ${st.border}`}>{st.label}</span>

@@ -14,24 +14,24 @@ model Role {
 }
 
 model Department {
-  id             Int    @id @default(autoincrement())
+  id             Int        @id @default(autoincrement())
   departmentName String
   users          User[]
   documents      Document[]
 }
 
 model User {
-  id           Int           @id @default(autoincrement())
-  fullName     String
-  position     String
-  departmentId Int?
-  roleId       Int
-  department   Department?   @relation(fields: [departmentId], references: [id])
-  role         Role          @relation(fields: [roleId], references: [id])
-  registration Registration?
-  authoredDocs Document[]    @relation("DocumentAuthor")
-  assignedDocs Document[]    @relation("DocumentAssignee")
-  auditLogs    AuditLog[]
+  id                   Int                    @id @default(autoincrement())
+  fullName             String
+  position             String
+  departmentId         Int?
+  roleId               Int
+  department           Department?            @relation(fields: [departmentId], references: [id])
+  role                 Role                   @relation(fields: [roleId], references: [id])
+  registration         Registration?
+  authoredDocs         Document[]             @relation("DocumentAuthor")
+  assignedDocs         Document[]             @relation("DocumentAssignee")
+  auditLogs            AuditLog[]
   passwordResetRequests PasswordResetRequest[]
 }
 
@@ -66,8 +66,10 @@ model Document {
   statusId        Int
   departmentId    Int?
   
+  // === ХРАНЕНИЕ ФАЙЛА В БАЗЕ ===
   fileName        String?
-  fileUrl         String?
+  fileData        String?        @db.Text
+  fileType        String?
 
   // === НОВЫЕ ПОЛЯ ИЗ ВАШЕГО PHP ПРОЕКТА ===
   deadline        DateTime?
@@ -76,8 +78,9 @@ model Document {
 
   // === ПОЛЯ РЕЗУЛЬТАТА ВЫПОЛНЕНИЯ ЗАДАЧИ ===
   resultText      String?
-  resultFileUrl   String?
   resultFileName  String?
+  resultFileData  String?        @db.Text
+  resultFileType  String?
 
   author          User           @relation("DocumentAuthor", fields: [userId], references: [id])
   assignee        User?          @relation("DocumentAssignee", fields: [assignedTo], references: [id])
