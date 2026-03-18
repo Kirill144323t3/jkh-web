@@ -3,89 +3,78 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
 }
 
+
 model Role {
-  id       Int    @id @default(autoincrement())
-  roleName String @unique
-  users    User[]
+  id    Int    @id @default(autoincrement())
+  name  String
+  users User[]
 }
 
 model Department {
-  id             Int        @id @default(autoincrement())
+  id             Int    @id @default(autoincrement())
   departmentName String
   users          User[]
-  documents      Document[]
 }
 
 model User {
-  id                   Int                    @id @default(autoincrement())
-  fullName             String
-  position             String
-  departmentId         Int?
-  roleId               Int
-  department           Department?            @relation(fields: [departmentId], references: [id])
-  role                 Role                   @relation(fields: [roleId], references: [id])
-  registration         Registration?
-  authoredDocs         Document[]             @relation("DocumentAuthor")
-  assignedDocs         Document[]             @relation("DocumentAssignee")
-  auditLogs            AuditLog[]
-  passwordResetRequests PasswordResetRequest[]
+  id              Int                    @id @default(autoincrement())
+  fullName        String
+  position        String?
+  roleId          Int
+  departmentId    Int?
+  role            Role                   @relation(fields: [roleId], references: [id])
+  department      Department?            @relation(fields: [departmentId], references: [id])
+  registration    Registration?
+  authoredDocs    Document[]             @relation("AuthorDocs")
+  assignedDocs    Document[]             @relation("AssigneeDocs")
+  auditLogs       AuditLog[]
+  passwordResets  PasswordResetRequest[]
 }
 
 model Registration {
   id              Int       @id @default(autoincrement())
-  userId          Int       @unique
   login           String    @unique
   password        String
-  passwordExpires DateTime
-  
-  // === НОВЫЕ ПОЛЯ ДЛЯ БЛОКИРОВКИ ===
   isBlocked       Boolean   @default(false)
   wrongAttempts   Int       @default(0)
   blockedUntil    DateTime?
-
+  passwordExpires DateTime?
+  userId          Int       @unique
   user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model DocumentStatus {
-  id         Int        @id
-  statusName String
-  documents  Document[]
+model Status {
+  id        Int        @id @default(autoincrement())
+  name      String
+  documents Document[]
 }
 
 model Document {
-  id              Int            @id @default(autoincrement())
+  id              Int       @id @default(autoincrement())
   title           String
   taskDescription String?
-  createdAt       DateTime?      @default(now())
-  userId          Int
   assignedTo      Int?
-  statusId        Int
-  departmentId    Int?
-  
-  // === ХРАНЕНИЕ ФАЙЛА В БАЗЕ ===
+  statusId        Int       @default(1)
+  userId          Int
   fileName        String?
-  fileData        String?        @db.Text
+  fileData        String?   // SQLite прекрасно переварит это как обычную строку
   fileType        String?
-
-  // === НОВЫЕ ПОЛЯ ИЗ ВАШЕГО PHP ПРОЕКТА ===
   deadline        DateTime?
-  priority        String         @default("medium") // high, medium, low
+  priority        String    @default("medium")
+  createdAt       DateTime  @default(now())
   completedAt     DateTime?
-
-  // === ПОЛЯ РЕЗУЛЬТАТА ВЫПОЛНЕНИЯ ЗАДАЧИ ===
   resultText      String?
   resultFileName  String?
-  resultFileData  String?        @db.Text
+  resultFileData  String?   // Здесь тоже просто строка
   resultFileType  String?
 
-  author          User           @relation("DocumentAuthor", fields: [userId], references: [id])
-  assignee        User?          @relation("DocumentAssignee", fields: [assignedTo], references: [id])
-  status          DocumentStatus @relation(fields: [statusId], references: [id])
-  department      Department?    @relation(fields: [departmentId], references: [id])
+  author          User      @relation("AuthorDocs", fields: [userId], references: [id])
+  assignee        User?     @relation("AssigneeDocs", fields: [assignedTo], references: [id])
+  status          Status    @relation(fields: [statusId], references: [id])
 }
 
 model AuditLog {
@@ -94,16 +83,14 @@ model AuditLog {
   action    String
   details   String?
   createdAt DateTime @default(now())
-
-  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  user      User?    @relation(fields: [userId], references: [id])
 }
 
 model PasswordResetRequest {
   id        Int      @id @default(autoincrement())
   login     String
-  status    String   @default("PENDING") // PENDING, RESOLVED
-  createdAt DateTime @default(now())
-  
   userId    Int?
-  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status    String   @default("PENDING")
+  createdAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id])
 }
