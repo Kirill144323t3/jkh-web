@@ -79,6 +79,7 @@ export async function createUser(formData: FormData) {
     }
   });
   revalidatePath('/');
+  redirect('/?section=users');
 }
 
 export async function updateUser(formData: FormData) {
@@ -99,6 +100,7 @@ export async function updateUser(formData: FormData) {
     });
   }
   revalidatePath('/');
+  redirect('/?section=users');
 }
 
 export async function deleteUser(formData: FormData) {
@@ -124,6 +126,7 @@ export async function createDepartment(formData: FormData) {
   const name = formData.get('departmentName') as string;
   await prisma.department.create({ data: { departmentName: name } });
   revalidatePath('/');
+  redirect('/?section=departments');
 }
 
 export async function deleteDepartment(formData: FormData) {
@@ -142,6 +145,7 @@ export async function createDocument(formData: FormData) {
     data: { title, userId: authorId, statusId: 1 }
   });
   revalidatePath('/');
+  redirect('/?section=documents');
 }
 
 export async function deleteDocument(formData: FormData) {
