@@ -80,7 +80,7 @@ export default async function AdminDashboardPage({ searchParams }: {
 
   const usersFiltered = usersList.filter(u => {
     if (!userSearch) return true;
-    const haystack = `${u.fullName} ${u.role?.roleName ?? ''} ${u.department?.departmentName ?? ''}`.toLowerCase();
+    const haystack = `${u.fullName} ${u.role?.name ?? ''} ${u.department?.departmentName ?? ''}`.toLowerCase();
     return haystack.includes(userSearch);
   });
 
@@ -248,7 +248,7 @@ export default async function AdminDashboardPage({ searchParams }: {
                           </div>
                           <div className="flex-1 min-w-0">
                             <h3 className="text-sm sm:text-base font-semibold text-gray-900 truncate" title={u.fullName}>{u.fullName}</h3>
-                            <p className="text-xs text-gray-600 truncate">{u.role?.roleName} {u.department ? `• ${u.department.departmentName}` : ''}</p>
+                            <p className="text-xs text-gray-600 truncate">{u.role?.name} {u.department ? `• ${u.department.departmentName}` : ''}</p>
                           </div>
                         </div>
                       </div>
@@ -770,7 +770,7 @@ export default async function AdminDashboardPage({ searchParams }: {
                 <select name="assignedTo" className="w-full bg-slate-50 rounded-xl px-5 py-3.5 outline-none font-medium appearance-none border border-slate-200 focus:bg-white focus:ring-4 ring-blue-500/10 focus:border-blue-400 text-[15px] transition-all">
                   <option value="">Без исполнителя</option>
                   {usersList.map(u => (
-                    <option key={u.id} value={u.id}>{u.fullName} — {u.role?.roleName}</option>
+                    <option key={u.id} value={u.id}>{u.fullName} — {u.role?.name}</option>
                   ))}
                 </select>
               </div>
