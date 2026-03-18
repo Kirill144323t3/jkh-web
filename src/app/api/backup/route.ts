@@ -23,7 +23,6 @@ export async function GET() {
         departments: await prisma.department.findMany(),
         users: await prisma.user.findMany(),
         registrations: await prisma.registration.findMany(),
-        documentStatuses: await prisma.documentStatus.findMany(),
         documents: await prisma.document.findMany(),
         auditLogs: await prisma.auditLog.findMany(),
       }
