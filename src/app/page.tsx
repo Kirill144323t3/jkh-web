@@ -2,7 +2,7 @@ import { prisma } from '@/lib/prisma';
 import Link from 'next/link';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { createUser, createDepartment, logoutUser, deleteUser, deleteDepartment, updateUser, toggleBlockUser, deleteDocument, createDocument, resolvePasswordReset } from './actions';
+import { createUser, createDepartment, deleteUser, deleteDepartment, updateUser, toggleBlockUser, deleteDocument, createDocument, resolvePasswordReset } from './actions';
 import { LayoutDashboard, Users, Shield, Building2, FileText, Plus, X, Trash2, UserX, ChevronRight, CheckCircle2, CalendarDays, Paperclip, Briefcase, ScrollText, Database, Download, Key, Check } from 'lucide-react';
 import { DashboardLayout } from '@/components/DashboardLayout';
 
@@ -35,7 +35,7 @@ export default async function AdminDashboardPage({ searchParams }: {
       role: true, 
       department: true, 
       registration: true,
-      passwordResetRequests: {
+      passwordResets: {           // <-- ВОТ ТУТ ИЗМЕНИЛИ
         where: { status: 'PENDING' }
       }
     }, 
@@ -264,7 +264,7 @@ export default async function AdminDashboardPage({ searchParams }: {
                               {u.registration?.isBlocked ? 'Заблокирован' : 'Активен'}
                             </span>
                             
-                            {u.passwordResetRequests && u.passwordResetRequests.length > 0 && (
+                            {u.passwordResets && u.passwordResets.length > 0 && (
                               <span className="px-2.5 py-1 rounded-md text-[11px] sm:text-xs font-semibold uppercase tracking-wider bg-amber-50 text-amber-600 border border-amber-100 flex items-center gap-1">
                                 <Key className="w-3 h-3" /> Запрос пароля
                               </span>
