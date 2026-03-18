@@ -202,10 +202,3 @@ export async function resolvePasswordReset(formData: FormData) {
   await prisma.passwordResetRequest.delete({ where: { id } });
   revalidatePath('/');
 }
-export async function requestPasswordReset(formData: FormData) {
-  const login = formData.get('login') as string;
-  await prisma.passwordResetRequest.create({
-    data: { login, status: 'PENDING' }
-  });
-  revalidatePath('/login');
-}
