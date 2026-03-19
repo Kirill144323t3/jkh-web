@@ -1,5 +1,6 @@
 'use server'
 
+import { put } from '@vercel/blob';
 import { prisma } from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
@@ -60,46 +61,56 @@ export async function logoutUser() {
 
 // === УПРАВЛЕНИЕ ПОЛЬЗОВАТЕЛЯМИ ===
 export async function createUser(formData: FormData) {
-  const fullName = formData.get('fullName') as string;
-  const login = formData.get('login') as string;
-  const password = formData.get('password') as string;
-  const roleId = parseInt(formData.get('roleId') as string);
-  const deptId = formData.get('departmentId');
-  const departmentId = deptId ? parseInt(deptId as string) : null;
+  try {
+    const fullName = formData.get('fullName') as string;
+    const login = formData.get('login') as string;
+    const password = formData.get('password') as string;
+    const roleId = parseInt(formData.get('roleId') as string);
+    const deptId = formData.get('departmentId');
+    const departmentId = deptId ? parseInt(deptId as string) : null;
 
-  await prisma.user.create({
-    data: {
-      fullName,
-      position: 'Сотрудник',
-      roleId,
-      departmentId,
-      registration: {
-        create: { login, password }
+    await prisma.user.create({
+      data: {
+        fullName,
+        position: 'Сотрудник',
+        roleId,
+        departmentId,
+        registration: {
+          create: { login, password }
+        }
       }
-    }
-  });
-  revalidatePath('/');
+    });
+    revalidatePath('/');
+  } catch (e) {
+    console.error("Ошибка при создании пользователя:", e);
+    return;
+  }
   redirect('/?section=users');
 }
 
 export async function updateUser(formData: FormData) {
-  const id = parseInt(formData.get('id') as string);
-  const fullName = formData.get('fullName') as string;
-  const roleId = parseInt(formData.get('roleId') as string);
-  const password = formData.get('password') as string;
+  try {
+    const id = parseInt(formData.get('id') as string);
+    const fullName = formData.get('fullName') as string;
+    const roleId = parseInt(formData.get('roleId') as string);
+    const password = formData.get('password') as string;
 
-  await prisma.user.update({
-    where: { id },
-    data: { fullName, roleId }
-  });
-
-  if (password) {
-    await prisma.registration.update({
-      where: { userId: id },
-      data: { password }
+    await prisma.user.update({
+      where: { id },
+      data: { fullName, roleId }
     });
+
+    if (password) {
+      await prisma.registration.update({
+        where: { userId: id },
+        data: { password }
+      });
+    }
+    revalidatePath('/');
+  } catch (e) {
+    console.error("Ошибка при обновлении пользователя:", e);
+    return;
   }
-  revalidatePath('/');
   redirect('/?section=users');
 }
 
@@ -123,9 +134,14 @@ export async function toggleBlockUser(formData: FormData) {
 
 // === ОТДЕЛЫ ===
 export async function createDepartment(formData: FormData) {
-  const name = formData.get('departmentName') as string;
-  await prisma.department.create({ data: { departmentName: name } });
-  revalidatePath('/');
+  try {
+    const name = formData.get('departmentName') as string;
+    await prisma.department.create({ data: { departmentName: name } });
+    revalidatePath('/');
+  } catch (e) {
+    console.error("Ошибка при создании отдела:", e);
+    return;
+  }
   redirect('/?section=departments');
 }
 
@@ -135,16 +151,38 @@ export async function deleteDepartment(formData: FormData) {
   revalidatePath('/');
 }
 
-// === ДОКУМЕНТЫ ===
+// === ДОКУМЕНТЫ (С ЗАГРУЗКОЙ ФАЙЛОВ) ===
 export async function createDocument(formData: FormData) {
-  const cookieStore = await cookies();
-  const authorId = parseInt(cookieStore.get('userId')?.value || '1');
-  const title = formData.get('title') as string;
+  try {
+    const cookieStore = await cookies();
+    const authorId = parseInt(cookieStore.get('userId')?.value || '1');
+    const title = formData.get('title') as string;
+    const file = formData.get('file') as File | null; // Ловим файл из формы
 
-  await prisma.document.create({
-    data: { title, userId: authorId, statusId: 1 }
-  });
-  revalidatePath('/');
+    let fileUrl = null;
+
+    // Загружаем файл в облако Vercel Blob, если он прикреплен
+    if (file && file.size > 0) {
+      const blob = await put(file.name, file, {
+        access: 'public',
+      });
+      fileUrl = blob.url; // Получаем публичную ссылку на скачивание
+    }
+
+    await prisma.document.create({
+      data: { 
+        title, 
+        userId: authorId, 
+        statusId: 1,
+        // Если в твоей базе поле для файла называется иначе, поменяй 'filePath' на своё!
+        ...(fileUrl ? { filePath: fileUrl } : {}) 
+      }
+    });
+    revalidatePath('/');
+  } catch (e) {
+    console.error("Ошибка при создании документа:", e);
+    return;
+  }
   redirect('/?section=documents');
 }
 
@@ -169,14 +207,19 @@ export async function updateDocumentStatus(formData: FormData) {
 }
 
 export async function submitDocumentResult(formData: FormData) {
-  const id = parseInt(formData.get('id') as string);
-  const resultText = formData.get('resultText') as string;
+  try {
+    const id = parseInt(formData.get('id') as string);
+    const resultText = formData.get('resultText') as string;
 
-  await prisma.document.update({
-    where: { id },
-    data: { resultText, statusId: 3 }
-  });
-  revalidatePath('/');
+    await prisma.document.update({
+      where: { id },
+      data: { resultText, statusId: 3 }
+    });
+    revalidatePath('/');
+  } catch (e) {
+    console.error("Ошибка при отправке результата:", e);
+    return;
+  }
   redirect('/dashboard');
 }
 
