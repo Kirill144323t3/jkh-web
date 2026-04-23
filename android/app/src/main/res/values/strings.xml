@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Система ЖКХ</string>
+    <string name="title_activity_main">Система ЖКХ</string>
+    <string name="package_name">com.kirill.jkh</string>
+    <string name="custom_url_scheme">com.kirill.jkh</string>
+</resources>

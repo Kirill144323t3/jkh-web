@@ -1,0 +1,139 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+}
+
+
+model Role {
+  id    Int    @id @default(autoincrement())
+  name  String
+  users User[]
+}
+
+model Department {
+  id             Int    @id @default(autoincrement())
+  departmentName String
+  users          User[]
+}
+
+model User {
+  id              Int                    @id @default(autoincrement())
+  fullName        String
+  position        String?
+  roleId          Int
+  departmentId    Int?
+  role            Role                   @relation(fields: [roleId], references: [id])
+  department      Department?            @relation(fields: [departmentId], references: [id])
+  registration    Registration?
+  authoredDocs    Document[]             @relation("AuthorDocs")
+  assignedDocs    Document[]             @relation("AssigneeDocs")
+  auditLogs       AuditLog[]
+  passwordResets  PasswordResetRequest[]
+  comments        Comment[]
+  notifications   Notification[]
+  sentMessages    ChatMessage[]          @relation("SentMessages")
+  receivedMessages ChatMessage[]         @relation("ReceivedMessages")
+}
+
+model Registration {
+  id              Int       @id @default(autoincrement())
+  login           String    @unique
+  password        String
+  isBlocked       Boolean   @default(false)
+  wrongAttempts   Int       @default(0)
+  blockedUntil    DateTime?
+  passwordExpires DateTime?
+  userId          Int       @unique
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Status {
+  id        Int        @id @default(autoincrement())
+  name      String
+  documents Document[]
+}
+
+model Document {
+  id              Int       @id @default(autoincrement())
+  title           String
+  taskDescription String?
+  assignedTo      Int?
+  statusId        Int       @default(1)
+  userId          Int
+  fileName        String?
+  fileData        String?
+  fileType        String?
+  deadline        DateTime?
+  priority        String    @default("medium")
+  createdAt       DateTime  @default(now())
+  completedAt     DateTime?
+  resultText      String?
+  resultFileName  String?
+  resultFileData  String?
+  resultFileType  String?
+
+  author          User      @relation("AuthorDocs", fields: [userId], references: [id])
+  assignee        User?     @relation("AssigneeDocs", fields: [assignedTo], references: [id])
+  status          Status    @relation(fields: [statusId], references: [id])
+  comments        Comment[]
+}
+
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  userId    Int?
+  action    String
+  details   String?
+  createdAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id])
+}
+
+model PasswordResetRequest {
+  id        Int      @id @default(autoincrement())
+  login     String
+  userId    Int?
+  status    String   @default("PENDING")
+  createdAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id])
+}
+
+model Comment {
+  id         Int      @id @default(autoincrement())
+  text       String
+  documentId Int
+  userId     Int
+  fileName   String?
+  fileData   String?
+  fileType   String?
+  createdAt  DateTime @default(now())
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id])
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  link      String?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ChatMessage {
+  id         Int      @id @default(autoincrement())
+  senderId   Int
+  receiverId Int
+  text       String?
+  fileName   String?
+  fileData   String?
+  fileType   String?
+  isRead     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  sender     User     @relation("SentMessages", fields: [senderId], references: [id])
+  receiver   User     @relation("ReceivedMessages", fields: [receiverId], references: [id])
+}
