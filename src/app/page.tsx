@@ -799,46 +799,73 @@ export default async function AdminDashboardPage(props: {
 
       {/* ══ MODALS ══ */}
       {isAdding && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
-          <div className="bg-white w-full max-w-md rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
-            <div className="px-6 py-4 flex justify-between items-center border-b border-slate-100">
-              <h3 className="text-lg font-semibold text-slate-900">
-                {section === 'users' ? 'Новый сотрудник' : 'Новый отдел'}
-              </h3>
-              <Link href={`/?section=${section}`} className="w-9 h-9 bg-slate-50 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-100 border border-slate-100 transition-colors">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-md animate-fade-in-up">
+          <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden animate-fade-in-up">
+            {/* Gradient header */}
+            <div className={`px-6 py-5 flex justify-between items-center ${section === 'users' ? 'bg-gradient-to-r from-emerald-500 to-green-500' : 'bg-gradient-to-r from-orange-500 to-amber-500'}`}>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+                  {section === 'users' ? <Users className="w-5 h-5 text-white" /> : <Building2 className="w-5 h-5 text-white" />}
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white">
+                    {section === 'users' ? 'Новый сотрудник' : 'Новый отдел'}
+                  </h3>
+                  <p className="text-white/70 text-xs">Заполните данные ниже</p>
+                </div>
+              </div>
+              <Link href={`/?section=${section}`} className="w-9 h-9 bg-white/15 backdrop-blur-sm rounded-xl flex items-center justify-center text-white/80 hover:text-white hover:bg-white/25 transition-all">
                 <X className="w-4 h-4" />
               </Link>
             </div>
             <div className="p-6">
               {section === 'users' ? (
                 <form action={createUser} className="space-y-4">
-                  <input name="fullName" required placeholder="ФИО сотрудника" className="w-full bg-slate-50 focus:bg-white border border-slate-200 focus:border-purple-400 focus:ring-2 focus:ring-purple-200 rounded-xl px-4 py-3 text-[15px] font-medium outline-none transition-colors" />
-                  <div className="grid grid-cols-2 gap-4">
-                    <input name="login" required placeholder="Логин" className="w-full bg-slate-50 focus:bg-white border border-slate-200 focus:border-purple-400 focus:ring-2 focus:ring-purple-200 rounded-xl px-4 py-3 text-[15px] font-medium outline-none transition-colors" />
-                    <input name="password" required type="password" placeholder="Пароль" className="w-full bg-slate-50 focus:bg-white border border-slate-200 focus:border-purple-400 focus:ring-2 focus:ring-purple-200 rounded-xl px-4 py-3 text-[15px] font-medium outline-none transition-colors" />
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">ФИО</label>
+                    <input name="fullName" required placeholder="Иванов Иван Иванович" className="w-full bg-gray-50/80 focus:bg-white border border-gray-200 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/10 rounded-xl px-4 py-3 text-[15px] font-medium outline-none transition-all" />
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <select name="roleId" className="w-full bg-slate-50 focus:bg-white border border-slate-200 focus:border-purple-400 focus:ring-2 focus:ring-purple-200 rounded-xl px-4 py-3 text-[15px] font-medium outline-none transition-colors appearance-none">
-                      <option value="3">Сотрудник</option>
-                      <option value="4">Руководитель</option>
-                      <option value="1">Администратор</option>
-                    </select>
-                    <select name="departmentId" className="w-full bg-slate-50 focus:bg-white border border-slate-200 focus:border-purple-400 focus:ring-2 focus:ring-purple-200 rounded-xl px-4 py-3 text-[15px] font-medium outline-none transition-colors appearance-none">
-                      <option value="">Без отдела</option>
-                      {departments.map(d => (
-                        <option key={d.id} value={d.id}>{d.departmentName}</option>
-                      ))}
-                    </select>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Логин</label>
+                      <input name="login" required placeholder="ivanov" className="w-full bg-gray-50/80 focus:bg-white border border-gray-200 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/10 rounded-xl px-4 py-3 text-[15px] font-medium outline-none transition-all" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Пароль</label>
+                      <input name="password" required type="password" placeholder="••••••" className="w-full bg-gray-50/80 focus:bg-white border border-gray-200 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/10 rounded-xl px-4 py-3 text-[15px] font-medium outline-none transition-all" />
+                    </div>
                   </div>
-                  <button type="submit" className="w-full bg-gradient-to-r from-purple-500 to-purple-600 text-white py-3.5 rounded-xl text-[15px] font-semibold shadow-lg shadow-purple-500/20 mt-4 hover:shadow-xl active:scale-[0.98] transition-all">
-                    Создать
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Роль</label>
+                      <select name="roleId" className="w-full bg-gray-50/80 focus:bg-white border border-gray-200 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/10 rounded-xl px-4 py-3 text-[15px] font-medium outline-none transition-all appearance-none cursor-pointer">
+                        <option value="3">Сотрудник</option>
+                        <option value="4">Руководитель</option>
+                        <option value="1">Администратор</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Отдел</label>
+                      <select name="departmentId" className="w-full bg-gray-50/80 focus:bg-white border border-gray-200 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/10 rounded-xl px-4 py-3 text-[15px] font-medium outline-none transition-all appearance-none cursor-pointer">
+                        <option value="">Без отдела</option>
+                        {departments.map(d => (
+                          <option key={d.id} value={d.id}>{d.departmentName}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  <button type="submit" className="w-full bg-gradient-to-r from-emerald-500 to-green-500 text-white py-3.5 rounded-xl text-[15px] font-bold shadow-lg shadow-emerald-500/25 mt-2 hover:shadow-xl hover:-translate-y-0.5 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                    <Plus className="w-5 h-5" /> Создать сотрудника
                   </button>
                 </form>
               ) : (
                 <form action={createDepartment} className="space-y-4">
-                  <input name="departmentName" required placeholder="Название отдела" className="w-full bg-slate-50 focus:bg-white border border-slate-200 focus:border-purple-400 focus:ring-2 focus:ring-purple-200 rounded-xl px-4 py-3 text-[15px] font-medium outline-none transition-colors" />
-                  <button type="submit" className="w-full bg-gradient-to-r from-orange-500 to-amber-500 text-white py-3.5 rounded-xl text-[15px] font-semibold shadow-lg shadow-orange-500/20 mt-2 hover:shadow-xl active:scale-[0.98] transition-all">
-                    Создать отдел
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Название</label>
+                    <input name="departmentName" required placeholder="Бухгалтерия" className="w-full bg-gray-50/80 focus:bg-white border border-gray-200 focus:border-orange-400 focus:ring-4 focus:ring-orange-500/10 rounded-xl px-4 py-3 text-[15px] font-medium outline-none transition-all" />
+                  </div>
+                  <button type="submit" className="w-full bg-gradient-to-r from-orange-500 to-amber-500 text-white py-3.5 rounded-xl text-[15px] font-bold shadow-lg shadow-orange-500/25 mt-2 hover:shadow-xl hover:-translate-y-0.5 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                    <Plus className="w-5 h-5" /> Создать отдел
                   </button>
                 </form>
               )}
@@ -848,34 +875,54 @@ export default async function AdminDashboardPage(props: {
       )}
 
       {isEditing && userToEdit && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
-          <div className="bg-white w-full max-w-md rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
-            <div className="px-6 py-4 flex justify-between items-center border-b border-slate-100">
-              <h3 className="text-lg font-semibold text-slate-900">Редактирование</h3>
-              <Link href="/?section=users" className="w-9 h-9 bg-slate-50 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-100 border border-slate-100 transition-colors">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-md animate-fade-in-up">
+          <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden animate-fade-in-up">
+            <div className="px-6 py-5 flex justify-between items-center bg-gradient-to-r from-violet-500 to-purple-600">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center text-white text-sm font-bold">
+                  {userToEdit.fullName[0]}
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white">Редактирование</h3>
+                  <p className="text-white/70 text-xs truncate max-w-[200px]">{userToEdit.fullName}</p>
+                </div>
+              </div>
+              <Link href="/?section=users" className="w-9 h-9 bg-white/15 backdrop-blur-sm rounded-xl flex items-center justify-center text-white/80 hover:text-white hover:bg-white/25 transition-all">
                 <X className="w-4 h-4" />
               </Link>
             </div>
             <div className="p-6">
               <form action={updateUser} className="space-y-4">
                 <input type="hidden" name="id" value={userToEdit.id} />
-                <input name="fullName" defaultValue={userToEdit.fullName} required className="w-full bg-slate-50 focus:bg-white border border-slate-200 focus:border-purple-400 focus:ring-2 focus:ring-purple-200 rounded-xl px-4 py-3 text-[15px] font-medium outline-none transition-colors" />
-                <input name="password" type="text" placeholder="Новый пароль (если меняете)" className="w-full bg-slate-50 focus:bg-white border border-slate-200 focus:border-purple-400 focus:ring-2 focus:ring-purple-200 rounded-xl px-4 py-3 text-[15px] font-medium outline-none transition-colors" />
-                <div className="grid grid-cols-2 gap-4">
-                  <select name="roleId" defaultValue={userToEdit.roleId} className="w-full bg-slate-50 focus:bg-white border border-slate-200 focus:border-purple-400 focus:ring-2 focus:ring-purple-200 rounded-xl px-4 py-3 text-[15px] font-medium outline-none transition-colors appearance-none">
-                    <option value="3">Сотрудник</option>
-                    <option value="4">Руководитель</option>
-                    <option value="1">Администратор</option>
-                  </select>
-                  <select name="departmentId" defaultValue={userToEdit.departmentId || ''} className="w-full bg-slate-50 focus:bg-white border border-slate-200 focus:border-purple-400 focus:ring-2 focus:ring-purple-200 rounded-xl px-4 py-3 text-[15px] font-medium outline-none transition-colors appearance-none">
-                    <option value="">Без отдела</option>
-                    {departments.map(d => (
-                      <option key={d.id} value={d.id}>{d.departmentName}</option>
-                    ))}
-                  </select>
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">ФИО</label>
+                  <input name="fullName" defaultValue={userToEdit.fullName} required className="w-full bg-gray-50/80 focus:bg-white border border-gray-200 focus:border-purple-400 focus:ring-4 focus:ring-purple-500/10 rounded-xl px-4 py-3 text-[15px] font-medium outline-none transition-all" />
                 </div>
-                <button type="submit" className="w-full bg-gradient-to-r from-purple-500 to-purple-600 text-white py-3.5 rounded-xl text-[15px] font-semibold shadow-lg shadow-purple-500/20 mt-4 hover:shadow-xl active:scale-[0.98] transition-all">
-                  Сохранить
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Новый пароль</label>
+                  <input name="password" type="text" placeholder="Оставьте пустым если не меняете" className="w-full bg-gray-50/80 focus:bg-white border border-gray-200 focus:border-purple-400 focus:ring-4 focus:ring-purple-500/10 rounded-xl px-4 py-3 text-[15px] font-medium outline-none transition-all" />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Роль</label>
+                    <select name="roleId" defaultValue={userToEdit.roleId} className="w-full bg-gray-50/80 focus:bg-white border border-gray-200 focus:border-purple-400 focus:ring-4 focus:ring-purple-500/10 rounded-xl px-4 py-3 text-[15px] font-medium outline-none transition-all appearance-none cursor-pointer">
+                      <option value="3">Сотрудник</option>
+                      <option value="4">Руководитель</option>
+                      <option value="1">Администратор</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Отдел</label>
+                    <select name="departmentId" defaultValue={userToEdit.departmentId || ''} className="w-full bg-gray-50/80 focus:bg-white border border-gray-200 focus:border-purple-400 focus:ring-4 focus:ring-purple-500/10 rounded-xl px-4 py-3 text-[15px] font-medium outline-none transition-all appearance-none cursor-pointer">
+                      <option value="">Без отдела</option>
+                      {departments.map(d => (
+                        <option key={d.id} value={d.id}>{d.departmentName}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                <button type="submit" className="w-full bg-gradient-to-r from-violet-500 to-purple-600 text-white py-3.5 rounded-xl text-[15px] font-bold shadow-lg shadow-purple-500/25 mt-2 hover:shadow-xl hover:-translate-y-0.5 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                  <CheckCircle2 className="w-5 h-5" /> Сохранить изменения
                 </button>
               </form>
             </div>
@@ -884,43 +931,48 @@ export default async function AdminDashboardPage(props: {
       )}
 
       {isAddingDoc && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-900/40 backdrop-blur-sm">
-          <div className="bg-white w-full max-w-lg rounded-2xl shadow-xl p-8 border border-slate-200">
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-bold text-slate-900 flex items-center gap-3">
-                <FileText className="text-blue-500 w-6 h-6" />
-                Новое поручение
-              </h3>
-              <Link href={`/?section=${section}`} className="w-10 h-10 bg-slate-50 flex items-center justify-center rounded-xl text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-md animate-fade-in-up">
+          <div className="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden animate-fade-in-up">
+            <div className="px-6 py-5 flex justify-between items-center bg-gradient-to-r from-blue-500 to-cyan-500">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+                  <FileText className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white">Новое поручение</h3>
+                  <p className="text-white/70 text-xs">Создайте документ и назначьте исполнителя</p>
+                </div>
+              </div>
+              <Link href={`/?section=${section}`} className="w-9 h-9 bg-white/15 backdrop-blur-sm rounded-xl flex items-center justify-center text-white/80 hover:text-white hover:bg-white/25 transition-all">
                 <X className="w-5 h-5" />
               </Link>
             </div>
-            <form action={createDocument} encType="multipart/form-data" className="space-y-5 text-[15px]">
+            <form action={createDocument} encType="multipart/form-data" className="p-6 space-y-4">
               <div>
-                <label className="block mb-2 text-slate-600 font-semibold">Название документа</label>
-                <input name="title" required placeholder="Например: Заявка на ремонт" className="w-full bg-slate-50 rounded-xl px-5 py-3.5 outline-none focus:bg-white focus:ring-4 ring-blue-500/10 border border-slate-200 focus:border-blue-400 text-[15px] font-medium transition-all" />
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Название документа</label>
+                <input name="title" required placeholder="Например: Заявка на ремонт" className="w-full bg-gray-50/80 focus:bg-white border border-gray-200 focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 rounded-xl px-4 py-3 text-[15px] font-medium outline-none transition-all" />
               </div>
               <div>
-                <label className="block mb-2 text-slate-600 font-semibold">Описание задачи</label>
-                <textarea name="taskDescription" rows={3} placeholder="Подробности..." className="w-full bg-slate-50 rounded-xl px-5 py-3.5 outline-none focus:bg-white focus:ring-4 ring-blue-500/10 border border-slate-200 focus:border-blue-400 text-[15px] font-medium transition-all resize-none" />
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Описание задачи</label>
+                <textarea name="taskDescription" rows={3} placeholder="Подробности задачи..." className="w-full bg-gray-50/80 focus:bg-white border border-gray-200 focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 rounded-xl px-4 py-3 text-[15px] font-medium outline-none transition-all resize-none" />
               </div>
               <div>
-                <label className="block mb-2 text-slate-600 font-semibold">Исполнитель</label>
-                <select name="assignedTo" className="w-full bg-slate-50 rounded-xl px-5 py-3.5 outline-none font-medium appearance-none border border-slate-200 focus:bg-white focus:ring-4 ring-blue-500/10 focus:border-blue-400 text-[15px] transition-all">
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Исполнитель</label>
+                <select name="assignedTo" className="w-full bg-gray-50/80 focus:bg-white border border-gray-200 focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 rounded-xl px-4 py-3 text-[15px] font-medium outline-none transition-all appearance-none cursor-pointer">
                   <option value="">Без исполнителя</option>
                   {usersList.map(u => (
                     <option key={u.id} value={u.id}>{u.fullName} — {u.role?.name}</option>
                   ))}
                 </select>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block mb-2 text-slate-600 font-semibold">Дедлайн (до)</label>
-                  <input type="date" name="deadline" className="w-full bg-slate-50 rounded-xl px-5 py-3.5 outline-none focus:bg-white focus:ring-4 ring-blue-500/10 border border-slate-200 focus:border-blue-400 text-[15px] font-medium transition-all" />
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Дедлайн</label>
+                  <input type="date" name="deadline" className="w-full bg-gray-50/80 focus:bg-white border border-gray-200 focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 rounded-xl px-4 py-3 text-[15px] font-medium outline-none transition-all" />
                 </div>
                 <div>
-                  <label className="block mb-2 text-slate-600 font-semibold">Приоритет</label>
-                  <select name="priority" className="w-full bg-slate-50 rounded-xl px-5 py-3.5 outline-none font-medium appearance-none border border-slate-200 focus:bg-white focus:ring-4 ring-blue-500/10 focus:border-blue-400 text-[15px] transition-all">
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Приоритет</label>
+                  <select name="priority" className="w-full bg-gray-50/80 focus:bg-white border border-gray-200 focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 rounded-xl px-4 py-3 text-[15px] font-medium outline-none transition-all appearance-none cursor-pointer">
                     <option value="medium">Обычный</option>
                     <option value="high">Высокий</option>
                     <option value="low">Низкий</option>
@@ -928,10 +980,10 @@ export default async function AdminDashboardPage(props: {
                 </div>
               </div>
               <div>
-                <label className="block mb-2 text-slate-600 font-semibold">Прикрепить файл (необязательно)</label>
-                <input type="file" name="file" className="w-full bg-slate-50 rounded-xl px-5 py-3 outline-none font-medium text-sm border border-slate-200 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200 transition-all cursor-pointer" />
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Файл</label>
+                <input type="file" name="file" className="w-full bg-gray-50/80 rounded-xl px-4 py-2.5 text-sm border border-gray-200 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200 transition-all cursor-pointer" />
               </div>
-              <button type="submit" className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-4 rounded-xl text-[16px] font-bold shadow-xl shadow-blue-500/20 mt-4 active:scale-[0.98] hover:shadow-2xl transition-all duration-300 flex justify-center items-center gap-2">
+              <button type="submit" className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white py-3.5 rounded-xl text-[15px] font-bold shadow-lg shadow-blue-500/25 mt-2 hover:shadow-xl hover:-translate-y-0.5 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
                 <CheckCircle2 className="w-5 h-5" /> Создать и поручить
               </button>
             </form>
