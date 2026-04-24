@@ -1,11 +1,13 @@
 import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 
-export async function GET(req: NextRequest) {
-  const userId = req.nextUrl.searchParams.get('userId');
-  if (!userId) return NextResponse.json({ contacts: [], totalUnread: 0 }, { status: 400 });
+export async function GET(_req: NextRequest) {
+  const cookieStore = await cookies();
+  const userIdStr = cookieStore.get('userId')?.value;
+  if (!userIdStr) return NextResponse.json({ contacts: [], totalUnread: 0 }, { status: 401 });
 
-  const uid = parseInt(userId);
+  const uid = parseInt(userIdStr);
 
   // Get all users except current
   const allUsers = await prisma.user.findMany({

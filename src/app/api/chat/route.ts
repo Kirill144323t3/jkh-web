@@ -1,13 +1,15 @@
 import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 
 export async function GET(req: NextRequest) {
-  const userId = req.nextUrl.searchParams.get('userId');
+  const cookieStore = await cookies();
+  const userIdStr = cookieStore.get('userId')?.value;
+  if (!userIdStr) return NextResponse.json([], { status: 401 });
+  const uid = parseInt(userIdStr);
+
   const contactId = req.nextUrl.searchParams.get('contactId');
-
-  if (!userId || !contactId) return NextResponse.json([], { status: 400 });
-
-  const uid = parseInt(userId);
+  if (!contactId) return NextResponse.json([], { status: 400 });
   const cid = parseInt(contactId);
 
   // Mark messages as read
@@ -41,8 +43,12 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const cookieStore = await cookies();
+  const userIdStr = cookieStore.get('userId')?.value;
+  if (!userIdStr) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const senderId = parseInt(userIdStr);
+
   const formData = await req.formData();
-  const senderId = parseInt(formData.get('senderId') as string);
   const receiverId = parseInt(formData.get('receiverId') as string);
   const text = formData.get('text') as string | null;
   const file = formData.get('file') as File | null;

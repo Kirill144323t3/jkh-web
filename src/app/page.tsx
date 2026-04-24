@@ -799,7 +799,7 @@ export default async function AdminDashboardPage(props: {
 
       {/* ══ MODALS ══ */}
       {isAdding && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-md animate-fade-in-up">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
           <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden animate-fade-in-up">
             {/* Gradient header */}
             <div className={`px-6 py-5 flex justify-between items-center ${section === 'users' ? 'bg-gradient-to-r from-emerald-500 to-green-500' : 'bg-gradient-to-r from-orange-500 to-amber-500'}`}>
@@ -875,7 +875,7 @@ export default async function AdminDashboardPage(props: {
       )}
 
       {isEditing && userToEdit && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-md animate-fade-in-up">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
           <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden animate-fade-in-up">
             <div className="px-6 py-5 flex justify-between items-center bg-gradient-to-r from-violet-500 to-purple-600">
               <div className="flex items-center gap-3">
@@ -931,7 +931,7 @@ export default async function AdminDashboardPage(props: {
       )}
 
       {isAddingDoc && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-md animate-fade-in-up">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
           <div className="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden animate-fade-in-up">
             <div className="px-6 py-5 flex justify-between items-center bg-gradient-to-r from-blue-500 to-cyan-500">
               <div className="flex items-center gap-3">

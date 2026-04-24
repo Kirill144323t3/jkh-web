@@ -41,7 +41,7 @@ export function ChatWidget({ userId, userName }: { userId: number; userName: str
 
   const fetchContacts = async () => {
     try {
-      const res = await fetch(`/api/chat/contacts?userId=${userId}`);
+      const res = await fetch(`/api/chat/contacts`);
       if (res.ok) {
         const data = await res.json();
         setContacts(data.contacts || []);
@@ -52,7 +52,7 @@ export function ChatWidget({ userId, userName }: { userId: number; userName: str
 
   const fetchMessages = async (contactId: number) => {
     try {
-      const res = await fetch(`/api/chat?userId=${userId}&contactId=${contactId}`);
+      const res = await fetch(`/api/chat?contactId=${contactId}`);
       if (res.ok) {
         const data = await res.json();
         setMessages(data);
@@ -114,7 +114,6 @@ export function ChatWidget({ userId, userName }: { userId: number; userName: str
     setSending(true);
 
     const formData = new FormData();
-    formData.append('senderId', userId.toString());
     formData.append('receiverId', selectedContact.id.toString());
     if (text.trim()) formData.append('text', text.trim());
     if (file) formData.append('file', file);

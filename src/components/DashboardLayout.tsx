@@ -208,11 +208,9 @@ export function DashboardLayout({ children, userRole, userId, userName }: { chil
       )}
 
       {/* ═══ MAIN CONTENT ═══ */}
-      <main className={`transition-all duration-300 ${collapsed ? 'lg:ml-[72px]' : 'lg:ml-[260px]'}`}>
+      <main className={`transition-all duration-300 min-h-screen ${collapsed ? 'lg:ml-[72px]' : 'lg:ml-[260px]'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6 lg:py-8">
-          <div className="animate-fade-in-up">
-            {children}
-          </div>
+          {children}
         </div>
       </main>
 
